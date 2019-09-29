@@ -3,14 +3,21 @@ services:
   - docker
 
 before_install:
-  - docker build -t stephengrider/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t amusama/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run stephengrider/react-test npm test -- --coverage
+  - docker run amusama/react-test npm test -- --coverage
 
 after_success:
-  - docker build -t stephengrider/multi-client ./client
-  - docker build -t stephengrider/multi-nginx ./nginx
-  - docker build -t stephengrider/multi-server ./server
-  - docker build -t stephengrider/multi-worker ./worker
+  - docker build -t amusama/multi-client ./client
+  - docker build -t amusama/multi-nginx ./nginx
+  - docker build -t amusama/multi-server ./server
+  - docker build -t amusama/multi-worker ./worker
   
+    # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push amusama/multi-client
+  - docker push amusama/multi-nginx
+  - docker push amusama/multi-server
+  - docker push amusama/multi-worker
